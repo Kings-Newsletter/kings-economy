@@ -1,0 +1,39 @@
+# Dependências e build
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Segredos e variáveis de ambiente (o .env.example é versionado)
+.env
+.env.*
+!.env.example
+
+# Vercel
+.vercel/
+
+# Skills e configurações locais de agentes (qualquer tipo)
+.agents/
+.claude/
+.cursor/
+.windsurf/
+.codex/
+.gemini/
+.devin/
+.freebuff/
+skills/
+skills-lock.json
+*.skill
+*.skill.md
+SKILL.md
+
+# Logs e arquivos do sistema
+logs/
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+
+# Editores
+.vscode/*
+!.vscode/extensions.json
+.idea/
