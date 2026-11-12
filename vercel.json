@@ -6,10 +6,11 @@
       "maxDuration": 15
     }
   },
-  "redirects": [{ "source": "/", "destination": "/economy/", "permanent": false }],
+  "redirects": [{ "source": "/", "destination": "/economy", "permanent": false }],
   "rewrites": [
     { "source": "/economy/api/:path*", "destination": "/api/:path*" },
     { "source": "/economy", "destination": "/index.html" },
+    { "source": "/economy/", "destination": "/index.html" },
     { "source": "/economy/:path*", "destination": "/:path*" }
   ]
 }
