@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
 import { stockHref, TickerItem, useTicker } from '../../lib/brapi';
 import { pct } from '../../lib/format';
+import { Skeleton } from '../ui/Skeleton';
 
 const SPEED_PX_PER_S = 32;
 const RESUME_AFTER_MS = 4000;
@@ -214,7 +215,19 @@ export const StockTicker: React.FC = () => {
 
         <div className="ticker-viewport" ref={viewportRef}>
           {ticker.status === 'loading' ? (
-            <p className="ticker-loading">Carregando cotações…</p>
+            <div aria-busy="true">
+              <ul className="ticker-skeleton" aria-hidden="true">
+                {Array.from({ length: 12 }, (_, i) => (
+                  <li key={i}>
+                    <Skeleton width={20} height={20} />
+                    <Skeleton width="2.6rem" height="0.8rem" />
+                    <Skeleton width="3.4rem" height="0.8rem" />
+                    <Skeleton width="2.4rem" height="0.7rem" />
+                  </li>
+                ))}
+              </ul>
+              <span className="sr-only">Carregando cotações…</span>
+            </div>
           ) : (
             <div className="ticker-track">
               <ul ref={firstCopyRef}>

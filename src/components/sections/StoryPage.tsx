@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import { ArrowLeft, CalendarDays, ExternalLink, Link2, Newspaper } from 'lucide-react';
 import { Story, editionLabel, longDate, newsHref, storyHref, useStory } from '../../lib/news';
 import { StoryFigure } from '../ui/StoryFigure';
+import { Skeleton, SkeletonText } from '../ui/Skeleton';
 import { withTerms } from '../ui/Term';
 
 const MoreCard: React.FC<{ story: Story }> = ({ story }) => (
@@ -68,7 +69,18 @@ export const StoryPage: React.FC<{ id: string }> = ({ id }) => {
         </nav>
 
         {state.status === 'loading' && (
-          <div className="headline-skeleton" aria-busy="true">
+          <div className="story-article story-skeleton" aria-busy="true">
+            <div className="story-article-head" aria-hidden="true">
+              <Skeleton width="7rem" height="0.85rem" />
+              <SkeletonText lines={2} lastWidth="75%" className="story-skeleton-title" />
+              <Skeleton width="16rem" height="0.85rem" />
+            </div>
+            <Skeleton className="story-skeleton-figure" />
+            <div className="story-skeleton-body" aria-hidden="true">
+              <SkeletonText lines={4} lastWidth="80%" />
+              <SkeletonText lines={5} lastWidth="45%" />
+              <SkeletonText lines={3} lastWidth="65%" />
+            </div>
             <span className="sr-only">Carregando a notícia…</span>
           </div>
         )}

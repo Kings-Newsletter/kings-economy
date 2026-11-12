@@ -12,6 +12,7 @@ import { brl, pct } from '../../lib/format';
 import { Sparkline } from '../ui/IndicatorValue';
 import { SectionHead } from '../ui/RangeField';
 import { Term } from '../ui/Term';
+import { Skeleton } from '../ui/Skeleton';
 import { stockHref } from '../../lib/brapi';
 
 const direction = (v: number) => (Math.abs(v) < 0.005 ? 'flat' : v > 0 ? 'up' : 'down');
@@ -181,9 +182,21 @@ export const MarketsSection: React.FC<{ market: MarketState }> = ({ market }) =>
 
         <div className="stocks-table">
           {market.stocks.status === 'loading' && (
-            <p className="empty-state" aria-busy="true">
-              Carregando as cotações…
-            </p>
+            <div className="stocks-skeleton" aria-busy="true">
+              {Array.from({ length: 6 }, (_, i) => (
+                <div className="stocks-skeleton-row" key={i} aria-hidden="true">
+                  <span style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <Skeleton width={28} height={28} />
+                    <Skeleton width="4rem" height="0.9rem" />
+                  </span>
+                  <Skeleton width="5rem" height="0.9rem" />
+                  <Skeleton width="3.5rem" height="0.9rem" />
+                  <Skeleton width="100%" height="0.5rem" radius="999px" />
+                  <Skeleton width="3rem" height="0.8rem" />
+                </div>
+              ))}
+              <span className="sr-only">Carregando as cotações…</span>
+            </div>
           )}
           {market.stocks.status === 'error' && (
             <p className="empty-state">

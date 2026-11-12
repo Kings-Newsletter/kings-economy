@@ -16,6 +16,7 @@ import { HistoryPoint, RANGES, RangeId, StockDetail, useStockDetail } from '../.
 import { brl, pct } from '../../lib/format';
 import { formatQuoteTime } from '../../lib/marketData';
 import { OneSentence } from '../ui/RangeField';
+import { MarketLoader, Skeleton, SkeletonText } from '../ui/Skeleton';
 
 const dateShort = (ms: number) =>
   new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', timeZone: 'America/Sao_Paulo' }).format(new Date(ms));
@@ -299,7 +300,13 @@ export const StockPage: React.FC<{ symbol: string }> = ({ symbol }) => {
     headingRef.current?.focus();
   }, [symbol]);
 
-  const d = detail.status === 'ok' ? detail.data : null;
+  // Ao trocar o período, mantém os dados anteriores na tela até chegarem os novos.
+  const lastRef = useRef<{ symbol: string; data: StockDetail } | null>(null);
+  if (detail.status === 'ok') lastRef.current = { symbol, data: detail.data };
+  const stale = detail.status === 'loading' && lastRef.current?.symbol === symbol ? lastRef.current.data : null;
+  const d = detail.status === 'ok' ? detail.data : stale;
+  const firstLoad = detail.status === 'loading' && !d;
+  const reloading = detail.status === 'loading' && Boolean(d);
   const fmt = (v: number) => (isIndex ? v.toLocaleString('pt-BR', { maximumFractionDigits: 0 }) : brl(v));
   const periodChange = useMemo(() => {
     if (!d || d.history.length < 2) return null;
@@ -330,7 +337,11 @@ export const StockPage: React.FC<{ symbol: string }> = ({ symbol }) => {
               <h1 ref={headingRef} tabIndex={-1} translate="no">
                 {isIndex ? 'Ibovespa' : symbol}
               </h1>
-              <p>{isIndex ? 'Principal índice de ações da bolsa brasileira' : d?.name ?? 'Carregando…'}</p>
+              {isIndex || d ? (
+                <p>{isIndex ? 'Principal índice de ações da bolsa brasileira' : d?.name}</p>
+              ) : firstLoad ? (
+                <Skeleton width="14rem" height="1rem" style={{ marginTop: '0.55rem' }} />
+              ) : null}
               {d?.profile.sector && (
                 <p className="stock-sector">
                   {d.profile.sector}
@@ -339,6 +350,13 @@ export const StockPage: React.FC<{ symbol: string }> = ({ symbol }) => {
               )}
             </div>
           </div>
+          {firstLoad && (
+            <div className="stock-quote" aria-hidden="true">
+              <Skeleton width="10rem" height="2.75rem" radius="var(--raio)" />
+              <Skeleton width="13rem" height="0.95rem" />
+              <Skeleton width="16rem" height="0.75rem" />
+            </div>
+          )}
           {d && (
             <div className="stock-quote">
               <strong>{fmt(d.price)}</strong>
@@ -372,14 +390,14 @@ export const StockPage: React.FC<{ symbol: string }> = ({ symbol }) => {
               ))}
             </div>
           </div>
-          {periodChange !== null && d && (
+          {periodChange !== null && d && !reloading && (
             <p className="stock-period-note">
               No período, de {fmt(d.history[0].close)} para {fmt(d.history[d.history.length - 1].close)}:{' '}
               <strong>{pct(periodChange, 2)}</strong>.
             </p>
           )}
 
-          {detail.status === 'loading' && (
+          {firstLoad && (
             <div className="stock-chart-skeleton" aria-busy="true">
               <span className="sr-only">Carregando o gráfico…</span>
             </div>
@@ -391,11 +409,31 @@ export const StockPage: React.FC<{ symbol: string }> = ({ symbol }) => {
               <a href="#mercados">Voltar para Moedas e bolsa</a>
             </p>
           )}
-          {d && d.history.length > 1 && <PriceChart history={d.history} isIndex={isIndex} symbol={symbol} />}
+          {d && d.history.length > 1 && (
+            <div className={reloading ? 'stock-chart-reloading' : undefined} aria-busy={reloading || undefined}>
+              {reloading && <MarketLoader size={56} caption="Buscando o período…" />}
+              <PriceChart history={d.history} isIndex={isIndex} symbol={symbol} />
+            </div>
+          )}
           {d && d.history.length <= 1 && (
             <p className="empty-state">A fonte não enviou histórico para este período. Tente outro período.</p>
           )}
         </section>
+
+        {firstLoad && (
+          <section className="stock-section" aria-busy="true" aria-label="Carregando os números do dia">
+            <Skeleton width="18rem" height="1.6rem" style={{ marginBottom: '1.25rem' }} />
+            <div className="stats-skeleton">
+              {Array.from({ length: 6 }, (_, i) => (
+                <span key={i}>
+                  <Skeleton width="45%" height="0.8rem" />
+                  <Skeleton width="65%" height="1.5rem" />
+                  <SkeletonText lines={2} />
+                </span>
+              ))}
+            </div>
+          </section>
+        )}
 
         {d && (
           <section className="stock-section" aria-labelledby="numeros-title">
