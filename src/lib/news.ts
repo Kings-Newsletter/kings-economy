@@ -7,7 +7,8 @@
 import { useEffect, useState } from 'react';
 import type { Loadable } from './marketData';
 
-const ENDPOINT = '/api/noticias';
+// BASE_URL é '/economy/' (vite.config.ts): a API também é servida sob esse caminho.
+const ENDPOINT = `${import.meta.env.BASE_URL}api/noticias`;
 export const NEWSLETTER_URL = 'https://kingsnewsletter.com';
 
 export interface StoryImage {

@@ -7,10 +7,17 @@ import react from '@vitejs/plugin-react';
  * servidor: sem o prefixo VITE_, o Vite não as coloca no JavaScript do navegador.
  * Variáveis já definidas no processo têm prioridade sobre o arquivo.
  */
-const newsApiDev = (env: Record<string, string>): Plugin => ({
+/**
+ * O site é publicado em kingsnewsletter.com/economy: o projeto da King's Newsletter
+ * repassa /economy/* para este projeto (rewrite no vercel.json de lá). Por isso todos os
+ * arquivos e a API ficam sob /economy/, inclusive no dev.
+ */
+const BASE = '/economy/';
+
+const newsApiDev =(env: Record<string, string>): Plugin => ({
   name: 'kings-economia-news-api',
   configureServer(server: ViteDevServer) {
-    server.middlewares.use('/api/noticias', async (req, res) => {
+    server.middlewares.use(`${BASE}api/noticias`, async (req, res) => {
       try {
         const mod = await server.ssrLoadModule('/server/newsApi.ts');
         const url = new URL(req.url ?? '/', 'http://localhost');
@@ -36,6 +43,7 @@ const newsApiDev = (env: Record<string, string>): Plugin => ({
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   return {
+    base: BASE,
     plugins: [react(), newsApiDev(env)],
     server: {
       port: 5173,
