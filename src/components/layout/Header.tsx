@@ -1,6 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import {
+  ArrowUp,
   BarChart3,
   BookOpen,
   CandlestickChart,
@@ -81,6 +82,14 @@ export const Header: React.FC<HeaderProps> = ({ theme, onToggleTheme }) => {
   const nextThemeLabel = theme === 'dark' ? 'Usar tema claro' : 'Usar tema escuro';
   const drawerRef = useRef<HTMLDialogElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
+  const [showBackToTop, setShowBackToTop] = useState(false);
+
+  useEffect(() => {
+    const updateVisibility = () => setShowBackToTop(window.scrollY > 400);
+    updateVisibility();
+    window.addEventListener('scroll', updateVisibility, { passive: true });
+    return () => window.removeEventListener('scroll', updateVisibility);
+  }, []);
 
   // Gaveta do menu em telas menores. O <dialog> nativo já prende o foco dentro dela,
   // deixa o resto da página inerte e fecha com Esc.
@@ -157,7 +166,7 @@ export const Header: React.FC<HeaderProps> = ({ theme, onToggleTheme }) => {
       {/* Âncora do topo, sempre visível (o cabeçalho grande some em telas menores). */}
       <span id="topo" className="top-anchor" aria-hidden="true" />
 
-      <header className="masthead">
+      <div className="masthead-topbar">
         <div className="wrap masthead-top">
           <p className="masthead-date">{today}</p>
           <button
@@ -171,11 +180,13 @@ export const Header: React.FC<HeaderProps> = ({ theme, onToggleTheme }) => {
             <span>{theme === 'dark' ? 'Tema claro' : 'Tema escuro'}</span>
           </button>
         </div>
+      </div>
 
+      <header className="masthead">
         <div className="wrap masthead-brand">
           <a className="brand" href="#topo" translate="no">
             <Crown className="brand-mark" aria-hidden="true" strokeWidth={1.6} />
-            <span>King&apos;s Economia</span>
+            <span>King&apos;s Economy</span>
           </a>
           <p className="masthead-tagline">A economia explicada do jeito que você entende.</p>
         </div>
@@ -197,7 +208,7 @@ export const Header: React.FC<HeaderProps> = ({ theme, onToggleTheme }) => {
           </button>
           <a className="appbar-brand" href="#topo" translate="no">
             <Crown className="brand-mark" aria-hidden="true" strokeWidth={1.7} />
-            <span>King&apos;s Economia</span>
+            <span>King&apos;s Economy</span>
           </a>
           <button
             type="button"
@@ -235,7 +246,7 @@ export const Header: React.FC<HeaderProps> = ({ theme, onToggleTheme }) => {
           <div className="drawer-head">
             <p id="drawer-title" className="drawer-brand" translate="no">
               <Crown className="brand-mark" aria-hidden="true" strokeWidth={1.7} />
-              King&apos;s Economia
+              King&apos;s Economy
             </p>
             <button type="button" className="appbar-button" onClick={closeDrawer} aria-label="Fechar menu">
               <X aria-hidden="true" size={22} />
@@ -259,6 +270,23 @@ export const Header: React.FC<HeaderProps> = ({ theme, onToggleTheme }) => {
           </nav>
         </div>
       </dialog>
+
+      {showBackToTop && (
+        <button
+          type="button"
+          className="back-to-top"
+          onClick={() =>
+            window.scrollTo({
+              top: 0,
+              behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+            })
+          }
+          aria-label="Voltar ao topo"
+          title="Voltar ao topo"
+        >
+          <ArrowUp aria-hidden="true" size={20} />
+        </button>
+      )}
     </>
   );
 };

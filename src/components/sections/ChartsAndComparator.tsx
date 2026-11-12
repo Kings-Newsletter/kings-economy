@@ -14,7 +14,7 @@ const useWidth = (fallback: number) => {
     const el = ref.current;
     if (!el || typeof ResizeObserver === 'undefined') return;
     const observer = new ResizeObserver(([entry]) => {
-      setWidth(Math.max(280, Math.round(entry.contentRect.width)));
+      setWidth(Math.max(1, Math.round(entry.contentRect.width)));
     });
     observer.observe(el);
     return () => observer.disconnect();

@@ -31,7 +31,7 @@ const useWidth = (fallback: number) => {
   useEffect(() => {
     const el = ref.current;
     if (!el || typeof ResizeObserver === 'undefined') return;
-    const ro = new ResizeObserver(([entry]) => setWidth(Math.max(280, Math.round(entry.contentRect.width))));
+    const ro = new ResizeObserver(([entry]) => setWidth(Math.max(1, Math.round(entry.contentRect.width))));
     ro.observe(el);
     return () => ro.disconnect();
   }, []);

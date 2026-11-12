@@ -78,11 +78,11 @@ export const App: React.FC = () => {
       if (subPage === 'noticia') return;
       document.title =
         subPage === 'noticias'
-          ? `Notícias${newsDate ? ` de ${newsDate}` : ''} | King's Economia`
-          : `${stockSymbol?.startsWith('^') ? 'Ibovespa' : stockSymbol}: gráficos e números | King's Economia`;
+          ? `Notícias${newsDate ? ` de ${newsDate}` : ''} | King's Economy`
+          : `${stockSymbol?.startsWith('^') ? 'Ibovespa' : stockSymbol}: gráficos e números | King's Economy`;
       return;
     }
-    document.title = "King's Economia";
+    document.title = "King's Economy";
     if (wasStockRef.current) {
       wasStockRef.current = false;
       requestAnimationFrame(() => {

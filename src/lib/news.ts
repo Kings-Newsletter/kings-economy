@@ -1,5 +1,5 @@
 /**
- * Notícias de economia do King's Economia, ramificação da King's Newsletter.
+ * Notícias de economia do King's Economy, ramificação da King's Newsletter.
  * Vêm da API própria /api/noticias (server/newsApi.ts), que lê a collection de economia
  * no MongoDB. O navegador nunca fala com o banco diretamente.
  */

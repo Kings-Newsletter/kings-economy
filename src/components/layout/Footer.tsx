@@ -8,7 +8,7 @@ export const Footer: React.FC = () => (
       <div className="site-footer-about">
         <p className="brand" translate="no">
           <Crown className="brand-mark" aria-hidden="true" strokeWidth={1.6} />
-          <span>King&apos;s Economia</span>
+          <span>King&apos;s Economy</span>
         </p>
         <p>
           Economia explicada em linguagem direta, do básico ao noticiário. A metodologia de cada
@@ -28,7 +28,7 @@ export const Footer: React.FC = () => (
           ))}
         </ul>
       </nav>
-      <p className="site-footer-copy">&copy; {new Date().getFullYear()} King&apos;s Economia</p>
+      <p className="site-footer-copy">&copy; {new Date().getFullYear()} King&apos;s Economy</p>
     </div>
   </footer>
 );

@@ -40,7 +40,7 @@ export const StoryPage: React.FC<{ id: string }> = ({ id }) => {
 
   useEffect(() => {
     if (story) {
-      document.title = `${story.title} | King's Economia`;
+      document.title = `${story.title} | King's Economy`;
       headingRef.current?.focus();
     }
   }, [story]);

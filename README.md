@@ -46,7 +46,7 @@ An economics news portal that teaches as it informs: live official indicators, B
 
 King's Economy is the economics branch of [King's Newsletter](https://kingsnewsletter.com), with its own visual identity. It looks and reads like the economics section of a newspaper, but every page is written for beginners: technical terms open a plain-language definition, each section starts with a one-sentence summary, and calculators let readers test ideas with their own numbers.
 
-The interface is in Brazilian Portuguese and is published as **King's Economia**.
+The interface is in Brazilian Portuguese and is published as **King's Economy**.
 
 **Explore:** [Source code](https://github.com/Kings-Newsletter/kings-economy) · [Report an issue](https://github.com/Kings-Newsletter/kings-economy/issues) · [King's Newsletter](https://kingsnewsletter.com)
 

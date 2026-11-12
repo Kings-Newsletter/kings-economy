@@ -15,9 +15,9 @@ import { StoryFigure } from '../ui/StoryFigure';
 const StoryItem: React.FC<{ story: Story; lead?: boolean }> = ({ story, lead }) => (
   <article className={`news-story ${lead ? 'is-lead' : ''}`}>
     {story.image && (
-      <a href={storyHref(story.id)} tabIndex={-1} aria-hidden="true" className="news-story-image-link">
+      <div className="news-story-image-link">
         <StoryFigure image={story.image} priority={lead} className="news-story-figure" />
-      </a>
+      </div>
     )}
     <div className="news-story-body">
       {story.category && <p className="story-category">{story.category}</p>}

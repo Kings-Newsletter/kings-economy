@@ -46,7 +46,7 @@ Um portal de notícias de economia que ensina enquanto informa: indicadores ofic
 
 O King's Economy é a ramificação de economia da [King's Newsletter](https://kingsnewsletter.com), com identidade visual própria. Tem a cara e o ritmo de leitura de uma seção de economia de jornal, mas cada página foi escrita para iniciantes: termos técnicos abrem uma definição simples, cada seção começa com um resumo "Em uma frase" e as calculadoras deixam o leitor testar as ideias com os próprios números.
 
-A interface é em português do Brasil e é publicada como **King's Economia**.
+A interface é em português do Brasil e é publicada como **King's Economy**.
 
 **Explore:** [Código-fonte](https://github.com/Kings-Newsletter/kings-economy) · [Relatar um problema](https://github.com/Kings-Newsletter/kings-economy/issues) · [King's Newsletter](https://kingsnewsletter.com)
 

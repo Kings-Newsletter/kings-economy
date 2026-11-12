@@ -1,5 +1,5 @@
 /**
- * API de notícias do King's Economia, lida direto do MongoDB.
+ * API de notícias do King's Economy, lida direto do MongoDB.
  * Roda só no servidor: na Vercel como função (api/noticias.ts) e, em desenvolvimento,
  * dentro do Vite (vite.config.ts). A string de conexão nunca chega ao navegador.
  *
@@ -54,6 +54,26 @@ const getCollection = async (env: NewsEnv): Promise<Collection<Document>> => {
 };
 
 const text = (v: unknown) => (typeof v === 'string' ? v.trim() : '');
+const normalizePlainText = (value: unknown) => {
+  let cleaned = text(value)
+    .replace(/\[(.*?)\]\([^)]+\)/g, '$1')
+    .replace(/\[(.*?)\]/g, '$1')
+    .replace(/#+\s*/g, '')
+    .replace(/[*_~`]/g, '')
+    .replace(/\s+\|\s+/g, ' ')
+    .replace(/\r\n/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .replace(/\s*\n\s*/g, ' ')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+
+  cleaned = cleaned.replace(/^\d{1,2}\s+de\s+[a-zà-ÿç]+\s+de\s+\d{4}\s*/i, '');
+  cleaned = cleaned.replace(/^(?:Ler notícia|Ver edição completa)\s*$/gi, '');
+  cleaned = cleaned.replace(/\b(?:Reuters|Agência Brasil|Bloomberg|FT|Financial Times)\s*,?\s*publicada em\s*[^.]+\.?$/i, '');
+  cleaned = cleaned.replace(/\s{2,}/g, ' ').trim();
+
+  return cleaned;
+};
 const httpUrl = (v: unknown) => {
   const s = text(v);
   return /^https?:\/\//i.test(s) ? s : '';
@@ -65,9 +85,9 @@ const toPublic = (d: Document, full: boolean) => {
   const imageUrl = img ? httpUrl(img.url) : '';
   return {
     id: String(d._id),
-    title: text(d.title),
-    summary: text(d.summary),
-    ...(full ? { context: text(d.context) } : {}),
+    title: normalizePlainText(d.title),
+    summary: normalizePlainText(d.summary),
+    ...(full ? { context: normalizePlainText(d.context) } : {}),
     category: text(d.category),
     source: text(d.source) || text(d.sourceName),
     publishedAt: text(d.publishedAt),
