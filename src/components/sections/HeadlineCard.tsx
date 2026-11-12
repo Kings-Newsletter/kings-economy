@@ -2,6 +2,7 @@ import React from 'react';
 import { ArrowRight, Newspaper } from 'lucide-react';
 import { newsHref, storyHref, useEdition } from '../../lib/news';
 import { StoryFigure } from '../ui/StoryFigure';
+import { Skeleton, SkeletonText } from '../ui/Skeleton';
 
 /** Manchete da edição de economia mais recente, com acesso à página de notícias. */
 export const HeadlineCard: React.FC = () => {
@@ -13,9 +14,31 @@ export const HeadlineCard: React.FC = () => {
 
   if (edition.status === 'loading') {
     return (
-      <section className="headline band" aria-busy="true" aria-label="Manchete da edição atual">
-        <div className="wrap">
-          <div className="headline-skeleton" />
+      <section className="headline headline-loading band" aria-busy="true" aria-label="Carregando a manchete da edição atual">
+        <div className="wrap" aria-hidden="true">
+          <div className="headline-header">
+            <Skeleton width="9rem" height="0.85rem" />
+          </div>
+          <div className="headline-grid">
+            <div className="headline-card">
+              <Skeleton height="auto" radius="var(--raio)" style={{ aspectRatio: '4 / 3' }} />
+              <div className="headline-body" style={{ display: 'grid', gap: '0.9rem', alignContent: 'start' }}>
+                <Skeleton width="6rem" height="0.75rem" />
+                <SkeletonText lines={3} lastWidth="70%" className="headline-skeleton-title" />
+                <Skeleton width="9.5rem" height="2.75rem" radius="var(--raio)" />
+              </div>
+            </div>
+            <div className="headline-more">
+              <Skeleton width="7rem" height="0.8rem" />
+              <ul>
+                {[0, 1, 2].map((i) => (
+                  <li key={i}>
+                    <SkeletonText lines={2} lastWidth="55%" />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </div>
       </section>
     );

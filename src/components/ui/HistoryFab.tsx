@@ -2,6 +2,7 @@ import React, { useEffect, useId, useRef, useState } from 'react';
 import { History, X } from 'lucide-react';
 import { longDate, newsHref, type EditionSummary } from '../../lib/news';
 import type { Loadable } from '../../lib/marketData';
+import { Skeleton } from './Skeleton';
 
 const STEP = 15;
 
@@ -48,7 +49,9 @@ export const HistoryFab: React.FC<HistoryFabProps> = ({ history, current }) => {
     const target =
       panel?.querySelector<HTMLElement>('[aria-current="page"]') ?? panel?.querySelector<HTMLElement>('a, button');
     target?.focus({ preventScroll: true });
-    target?.scrollIntoView({ block: 'nearest' });
+    // Rola só a lista do painel até a edição marcada (scrollIntoView rolaria a página).
+    const list = target?.closest<HTMLElement>('.history-panel-body');
+    if (list && target) list.scrollTop = Math.max(0, target.offsetTop - list.offsetTop - 48);
     return () => {
       document.removeEventListener('keydown', onKey);
       document.removeEventListener('pointerdown', onPointer);
@@ -107,7 +110,20 @@ export const HistoryFab: React.FC<HistoryFabProps> = ({ history, current }) => {
         </div>
 
         <div className="history-panel-body">
-          {history.status === 'loading' && <p className="history-panel-note">Carregando o arquivo…</p>}
+          {history.status === 'loading' && (
+            <div aria-busy="true">
+              <Skeleton width="9rem" height="0.8rem" />
+              <ol className="history-panel-list is-loading" aria-hidden="true">
+                {Array.from({ length: 6 }, (_, i) => (
+                  <li key={i}>
+                    <Skeleton width={`${70 - (i % 3) * 10}%`} height="0.95rem" />
+                    <Skeleton width="35%" height="0.75rem" />
+                  </li>
+                ))}
+              </ol>
+              <span className="sr-only">Carregando o arquivo…</span>
+            </div>
+          )}
           {history.status === 'error' && (
             <p className="history-panel-note">O arquivo de edições não respondeu agora. Tente de novo em alguns minutos.</p>
           )}

@@ -17,9 +17,60 @@
         if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
       } catch (e) {}
     </script>
+    <style>
+      /* Tela de abertura até o React montar (o próprio React a substitui): um gráfico de
+         candlestick em que as velas abrem uma a uma e a linha de preço se desenha. */
+      .boot { --bg: #fbfcfb; --fg: #4d5d59; --track: #dbe3e0; --up: #064e46; --down: #b42318; --line: #7a5200;
+        display: grid; place-items: center; align-content: center; gap: 1.1rem;
+        min-height: 100vh; min-height: 100dvh; margin: 0; background: var(--bg); color: var(--fg);
+        font: 0.9375rem/1.5 system-ui, sans-serif; }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme='light']) .boot { --bg: #0d1513; --fg: #a3b2ad; --track: #24332f; --up: #62c6b0; --down: #f2897e; --line: #f0c463; }
+      }
+      :root[data-theme='dark'] .boot { --bg: #0d1513; --fg: #a3b2ad; --track: #24332f; --up: #62c6b0; --down: #f2897e; --line: #f0c463; }
+      :root[data-theme='light'] .boot { --bg: #fbfcfb; --fg: #4d5d59; --track: #dbe3e0; --up: #064e46; --down: #b42318; --line: #7a5200; }
+      body:has(.boot) { margin: 0; background: var(--bg, #fbfcfb); }
+      .boot-mark { font: 700 1.5rem/1 Georgia, serif; color: var(--up); letter-spacing: -0.01em; }
+      .boot svg { display: block; overflow: visible; }
+      .boot .base { stroke: var(--track); stroke-width: 1; }
+      .boot g line { stroke-width: 1.4; stroke-linecap: round; }
+      .boot .up line { stroke: var(--up); } .boot .up rect { fill: var(--up); }
+      .boot .down line { stroke: var(--down); } .boot .down rect { fill: var(--down); }
+      .boot polyline { fill: none; stroke: var(--line); stroke-width: 1.6; stroke-linecap: round;
+        stroke-linejoin: round; stroke-dasharray: 100; }
+      @media (prefers-reduced-motion: no-preference) {
+        .boot g { transform-box: fill-box; transform-origin: 50% 100%;
+          animation: boot-vela 2.4s cubic-bezier(0.23, 1, 0.32, 1) infinite; }
+        .boot g:nth-of-type(2) { animation-delay: 0.14s; } .boot g:nth-of-type(3) { animation-delay: 0.28s; }
+        .boot g:nth-of-type(4) { animation-delay: 0.42s; } .boot g:nth-of-type(5) { animation-delay: 0.56s; }
+        .boot polyline { animation: boot-linha 2.4s cubic-bezier(0.77, 0, 0.175, 1) infinite; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .boot svg { animation: boot-pulso 1.8s ease-in-out infinite; }
+      }
+      @keyframes boot-vela { 0% { transform: scaleY(0.15); opacity: 0; } 18%, 78% { transform: scaleY(1); opacity: 1; }
+        100% { transform: scaleY(1); opacity: 0; } }
+      @keyframes boot-linha { 0%, 30% { stroke-dashoffset: 100; opacity: 1; } 70%, 84% { stroke-dashoffset: 0; opacity: 1; }
+        100% { stroke-dashoffset: 0; opacity: 0; } }
+      @keyframes boot-pulso { 50% { opacity: 0.45; } }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="boot" role="status">
+        <span class="boot-mark">King's Economy</span>
+        <svg viewBox="0 0 60 40" width="84" height="56" aria-hidden="true" focusable="false">
+          <line class="base" x1="0" y1="39" x2="60" y2="39" />
+          <g class="up"><line x1="6" y1="20" x2="6" y2="36" /><rect x="2.5" y="24" width="7" height="9" rx="1" /></g>
+          <g class="up"><line x1="18" y1="16" x2="18" y2="31" /><rect x="14.5" y="20" width="7" height="8" rx="1" /></g>
+          <g class="down"><line x1="30" y1="18" x2="30" y2="33" /><rect x="26.5" y="22" width="7" height="7" rx="1" /></g>
+          <g class="up"><line x1="42" y1="9" x2="42" y2="26" /><rect x="38.5" y="13" width="7" height="10" rx="1" /></g>
+          <g class="up"><line x1="54" y1="3" x2="54" y2="19" /><rect x="50.5" y="6" width="7" height="9" rx="1" /></g>
+          <polyline points="6,24 18,20 30,29 42,13 54,6" pathLength="100" />
+        </svg>
+        <span>Abrindo o pregão…</span>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
